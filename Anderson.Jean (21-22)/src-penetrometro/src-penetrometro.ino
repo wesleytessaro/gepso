@@ -104,7 +104,7 @@ String SendHTML() {
   ptr += "</style>\n";
   ptr += "</head>\n";
   ptr += "<body>\n";
-  ptr += "<h1>Penetrometro - GEPSO</h1>\n";
+  //ptr += "<h1>Penetrometro - GEPSO</h1>\n";
   ptr += analiseConcluida;
   ptr += "<a class=\"button button-on\" href=\"/analise\">Fazer Analise</a>\n";
   ptr += "</body>\n";
@@ -114,6 +114,7 @@ String SendHTML() {
 void handleSensores() {
   unsigned long tempoAtual = millis();
   acionaLuz();
+  tone(buzzer,800,1000);
   Serial.println("Iniciando análise em 2 seg");
   Serial.println("Analise Iniciada");
   escala.tare(); //zera a escala
@@ -136,6 +137,7 @@ void handleSensores() {
   //  dados="distancia:,"+distancia+" \n "+"resistencia:,"+resistencia+" \n "+"umidade:,"+umidade;
 
   apagaLuz();
+  tone(buzzer,1000,1000);
   Serial.println("finalizada:" + analiseConcluida);
 }
 
@@ -163,14 +165,14 @@ String getResistencia() {
   //return "0";
 }
 String getUmidade() {
-  return String(analogRead(A0));
+ return String(map(analogRead(A0),0,1024,1024,0));
 }
 
 
 void apagaLuz() {
-  digitalWrite(2, LOW);
+  digitalWrite(led,LOW);
 }
 
 void acionaLuz() {
-  digitalWrite(2, HIGH);
+digitalWrite(led,HIGH);
 }
