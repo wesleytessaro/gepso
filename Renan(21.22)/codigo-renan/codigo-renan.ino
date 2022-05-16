@@ -102,6 +102,7 @@ if (realizandoAnalise){
   else if(estado==3){
     if ((millis() - milisIniciado)<TEMPO_ANALISE_COMPLETA){
       Serial.println(String((millis() - milisIniciado))+","+String(lerPressao()));
+      delay(500);
     }
     else{
       Serial.println("----------Analise Finalizada ----------");
