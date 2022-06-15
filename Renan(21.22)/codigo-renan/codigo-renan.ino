@@ -20,6 +20,15 @@ int estado=0;
 int milisVerificarPressaoInterna=0;
 float inicioPressaoInterna=0;
 long int milisIniciado=0;
+
+const float ADC_mV = 4.8828125;       // convesion multiplier from Arduino ADC value to voltage in mV
+const float SensorOffset = 200.0;     // in mV taken from datasheet
+const float sensitivity = 4.413;      // in mV/mmH2O taken from datasheet
+const float mmh2O_cmH2O = 10;         // divide by this figure to convert mmH2O to cmH2O
+const float mmh2O_kpa = 0.00981;      // convesion multiplier from mmH2O to kPa
+
+
+
 void setup() {
   pinMode(PINO_BUZZER,OUTPUT);
   pinMode(PINO_RELE_BOMBA,OUTPUT);
@@ -120,7 +129,7 @@ if (realizandoAnalise){
 float lerPressao (){
 float valor=analogRead(A0);
 float P = ((valor / 1024) - 0.04) / 0.0012858;
+float sensorValue = ((analogRead(A0) * ADC_mV - SensorOffset) / sensitivity * mmh2O_kpa); //kpa
 
-
-return P; 
+return sensorValue; 
 }
