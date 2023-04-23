@@ -48,7 +48,7 @@ void setup() {
   Heltec.begin(true /*DisplayEnable Enable*/, true /*Heltec.Heltec.Heltec.LoRa Disable*/, true /*Serial Enable*/, true /*PABOOST Enable*/, BAND /*long BAND*/);
   WiFi.mode(WIFI_STA);
   // Connect or reconnect to WiFi
-  
+
   ThingSpeak.begin(client);
 
   bool status;
@@ -73,17 +73,13 @@ void loop() {
 
     // Connect or reconnect to WiFi
     if (WiFi.status() != WL_CONNECTED) {
-      int tempoConectar = millis();
-      Serial.print("Attempting to connect");
-      while ((WiFi.status() != WL_CONNECTED) && (millis() - tempoConectar) < 10000) {
-        Serial.print(".");
-        WiFi.begin(ssid, password);
-        delay(10);
-      }
+
+      WiFi.begin(ssid, password);
+
       if (WiFi.status() != WL_CONNECTED) {
         Serial.println("\nErro!!!");
       }
-      else{
+      else {
         Serial.println("\nConectado!!!");
       }
     }
@@ -122,7 +118,11 @@ void printValues() {
   Serial.print(humiditySoil);
   Serial.println("  ");
 
+  Serial.print("Bomba= ");
+  Serial.print(bombStatus);
+  Serial.println("  ");
 
+  
   ThingSpeak.setField(1, temperatureC);
   ThingSpeak.setField(2, humidity);
   ThingSpeak.setField(3, pressure);

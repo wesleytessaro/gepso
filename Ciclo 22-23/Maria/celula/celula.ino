@@ -32,6 +32,7 @@ HX711_ADC LoadCell(HX711_dout, HX711_sck);
 
 const int calVal_eepromAdress = 0;
 unsigned long t = 0;
+boolean reading=false;
 
 void setup() {
   Serial.begin(57600); delay(10);
@@ -72,7 +73,11 @@ void loop() {
     if (millis() > t + serialPrintInterval) {
       float i = LoadCell.getData();
       //Serial.print("Load_cell output val: ");
+      if(reading)
       Serial.println(String(millis())+","+String(i));
+
+      
+      
       newDataReady = 0;
       t = millis();
     }
@@ -82,6 +87,10 @@ void loop() {
   if (Serial.available() > 0) {
     char inByte = Serial.read();
     if (inByte == 't') LoadCell.tareNoDelay();
+
+    else if (inByte == 'i') reading=true;
+
+    else if (inByte == 'p') reading=false;
   }
 
   // check if last tare operation is complete:

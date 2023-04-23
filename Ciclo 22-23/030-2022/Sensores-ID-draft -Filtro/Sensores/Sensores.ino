@@ -10,23 +10,26 @@ unsigned int counter = 0;
 String rssi = "RSSI --";
 String packSize = "--";
 String packet ;
+//Filtro
+unsigned int vout = 0;
+unsigned int voutl = 0;
 void setup()
 {
-   //WIFI Kit series V1 not support Vext control
+  //WIFI Kit series V1 not support Vext control
   Heltec.begin(false /*DisplayEnable Enable*/, true /*Heltec.Heltec.Heltec.LoRa Disable*/, true /*Serial Enable*/, true /*PABOOST Enable*/, BAND /*long BAND*/);
   Heltec.display->init();
-  Heltec.display->flipScreenVertically();  
+  Heltec.display->flipScreenVertically();
   Heltec.display->setFont(ArialMT_Plain_10);
   delay(1500);
   Heltec.display->clear();
   Heltec.display->drawString(0, 0, "Heltec.LoRa Initial success!");
   Heltec.display->display();
   delay(1000);
-  pinMode(25,OUTPUT);
+  pinMode(25, OUTPUT);
   sensors.begin();
   Serial.begin(9600);
-  
-  if (ID==20){
+
+  if (ID == 20) {
     delay(120000);
   }
 }
@@ -39,16 +42,18 @@ void loop()
   Heltec.display->drawString(90, 0, String(analogRead(36)));
   Heltec.display->display();
   LoRa.beginPacket();
-  LoRa.setTxPower(14,RF_PACONFIG_PASELECT_PABOOST);
+  LoRa.setTxPower(14, RF_PACONFIG_PASELECT_PABOOST);
   sensors.requestTemperatures();
   float temperatureC = sensors.getTempCByIndex(0);
   // Serial.println(temperatureC);
-  analogWrite(25,256);
+  analogWrite(25, 256);
   delay(500);
-  LoRa.print("-"+String(temperatureC)+":");
+  vout = (vin + 11 * voutl) / 12;
+  voutl = vout;
+  LoRa.print("-" + String(voutl) + ":");
   LoRa.print(analogRead(36));
-  LoRa.print("+"+String(ID));
- LoRa.endPacket();
-  analogWrite(25,0);
-  delay(300000);//Verificar tempo  
+  LoRa.print("+" + String(ID));
+  LoRa.endPacket();
+  analogWrite(25, 0);
+  delay(300000);//Verificar tempo
 }

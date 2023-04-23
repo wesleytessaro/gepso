@@ -5,7 +5,9 @@
 
 #define BAND    868E6  //you can set band here directly,e.g. 868E6,915E6
 
+//const char* ssid = "IFMS-NA-CP";
 const char* ssid = "MEGuest_4178";
+//const char* password = "adm@IFmscpna!#";
 const char* password = "12345678";
 WiFiClient  client;
 
@@ -14,7 +16,8 @@ const char * myWriteAPIKey = "9IWG1KSKXYAPLZG9";
 
 void setup() {
   //WIFI Kit series V1 not support Vext control
-  Heltec.begin(false /*DisplayEnable Enable*/, true /*Heltec.LoRa Disable*/, true /*Serial Enable*/, true /*PABOOST Enable*/, BAND /*long BAND*/);
+  Heltec.begin(true /*DisplayEnable Enable*/, true /*Heltec.LoRa Disable*/, true /*Serial Enable*/, true /*PABOOST Enable*/, BAND /*long BAND*/);
+
   WiFi.mode(WIFI_STA);
 
   if (WiFi.status() != WL_CONNECTED) {
@@ -26,7 +29,18 @@ void setup() {
     Serial.println("\nConnected.");
     Serial.print("ESP Board MAC Address:  ");
     Serial.println(WiFi.macAddress());
+
+
   }
+
+  Heltec.display->init();
+  Heltec.display->flipScreenVertically();
+  Heltec.display->setFont(ArialMT_Plain_16);
+  Heltec.display->clear();
+  Heltec.display->drawString(33, 5, "GEPSO");
+  Heltec.display->drawString(10, 30, "OK");
+  Heltec.display->display();
+  delay(1000);
   ThingSpeak.begin(client);  // Initialize ThingSpeak
 
 }
@@ -60,12 +74,18 @@ void loop() {
     ThingSpeak.setField(3, id);
     int x = ThingSpeak.writeFields(myChannelNumber, myWriteAPIKey);
 
+ Heltec.display->clear();
+      Heltec.display->setTextAlignment(TEXT_ALIGN_LEFT);
+      String lido="H:"+String(x)+"-ID:"+String(id)+"/"+String(condutividade);
+      Heltec.display->drawString(0, 5, lido);
+      Heltec.display->drawString(0, 15, String(temperatura));
+      Heltec.display->display();
     if (x == 200) {
-      Serial.println("Channel update successful.");
+      Serial.println("Channel update successful."); 
     }
     else {
       Serial.println("Problem updating channel. HTTP error code " + String(x));
+      ThingSpeak.begin(client);  // Initialize ThingSpeak      
     }
   }
-  delay(1);
 }
